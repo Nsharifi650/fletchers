@@ -24,6 +24,7 @@ def load_data(config: preprocessConfig) -> Dataset:
         logger.info(f"Finished Uploading local data {file_name}")
     return Dataset(output=data)
 
+
 def split_data(
         dataset: Dataset, 
         config: PreprocessConfig
@@ -58,3 +59,6 @@ def preprocess_data(
             
     logger.info("Data preprocessing completed")
     return train_data, val_data
+
+# conversion of words to embedding
+
