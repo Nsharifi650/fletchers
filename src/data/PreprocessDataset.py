@@ -18,10 +18,6 @@ class Dataset(BaseModel):
     output: pd.DataFrame = Field(..., description = "output dataset ")
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-
-class EmbeddingDataset(BaseModel):
-    embeddingData: list = Field(..., descriptions="the message converted to embedding")
-    # List[List(float)]
 def load_data(config: PreprocessConfig) -> Dataset:
     data_dir = Path(config.rawdata_dir)
     for file in data_dir.glob("*.csv"):
@@ -69,10 +65,13 @@ def preprocess_data(
     logger.info("Data preprocessing completed")
     return train_data, val_data
 
+class EmbeddingDataset(BaseModel):
+    embeddingData: list = Field(..., descriptions="the message converted to embedding")
+    # List[List(float)]
+
 def get_embedding(text: str, config: PreprocessConfig):
     #print("api key", config.api_key)
-    # client = OpenAI(api_key=config.api_key)
-    client = OpenAI(api_key="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")
+    client = OpenAI(api_key=config.api_key)
     text = text.replace("\n", " ")
     response = client.embeddings.create(input = [text], model=config.embedding_model)
     embedding = response.data[0].embedding
@@ -99,4 +98,3 @@ def create_embeddings(config: PreprocessConfig) -> EmbeddingDataset:
 
     logger.info("Data conversion to embedding completed")
     return train_data, val_data
-
