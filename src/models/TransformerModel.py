@@ -123,22 +123,17 @@ class Encoder(nn.Module):
 
         return x
 
-
 # TRANSFORMER
-
 class Transformer(nn.Module):
     def __init__(self,num_layers, enc_d_model,
                 enc_num_heads, enc_dff, target_vocab_size, pe_target):
         super(Transformer, self).__init__()
-        self.encoder = Encoder(num_layers, enc_d_model, enc_num_heads, enc_dff, target_vocab_size)
+        self.encoder = Encoder(num_layers, enc_d_model, enc_num_heads, enc_dff, target_vocab_size, pe_target)
         # self.encoder = EncoderLayer(enc_d_model, enc_dff)
         self.final_layer = nn.Linear( enc_dff, 1)
 
-    def forward(self, properties, training):
-        logger.info("ENCODER STARTED")
-        enc_output = self.encoder(properties)
-        logger.info("ENCODER COMPLETED")
-
-
-        ffl_output = self.final_layer(enc_output)
+    def forward(self, x, padding_mask):
+        enc_output = self.encoder(x, padding_mask)
+        first_token = enc_output[:,0,:]
+        ffl_output = self.final_layer(first_token)
         return torch.sigmoid(ffl_output)

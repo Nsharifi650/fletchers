@@ -7,7 +7,6 @@ from pathlib import Path
 from src.utils.logger import logger
 from openai import OpenAI
 
-
 class PreprocessConfig(BaseModel):
     rawdata_dir: Path = Field(default = Path("data/raw"), description="direcotry of raw file")
     output_dir: Path = Field(default = Path("data/processed"), description = "directory of processed data")
